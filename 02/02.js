@@ -7,8 +7,7 @@ const games = input.map((line) => {
   const sets = line.replace(/Game \d+: /, "").split("; ");
   console.log(sets);
 
-  // exmaple game: 6 blue, 6 green, 9 red; 4 blue, 9 red, 3 green; 3 blue, 8 red
-  return {
+  const game = {
     id: +gameId,
     sets: sets.map((set) => ({
       red: set.match(/(\d+) red/)?.[1] || 0,
@@ -16,13 +15,19 @@ const games = input.map((line) => {
       green: set.match(/(\d+) green/)?.[1] || 0,
     })),
   };
+  const maxRed = Math.max(...game.sets.map(({ red }) => red));
+  const maxBlue = Math.max(...game.sets.map(({ blue }) => blue));
+  const maxGreen = Math.max(...game.sets.map(({ green }) => green));
+  game.power =
+    Math.max(maxRed, 1) * Math.max(maxBlue, 1) * Math.max(maxGreen, 1);
+  return game;
 });
 
 const redCubes = 12;
 const greenCubes = 13;
 const blueCubes = 14;
 
-const result = games.reduce((curr, { id, sets }) => {
+const part1 = games.reduce((curr, { id, sets }) => {
   if (
     sets.every(({ red, green, blue }) => {
       if (red > redCubes || green > greenCubes || blue > blueCubes) {
@@ -37,5 +42,11 @@ const result = games.reduce((curr, { id, sets }) => {
   return curr;
 }, 0);
 
+const part2 = games.reduce((curr, { power }) => {
+  return curr + power;
+}, 0);
+
 console.log(games);
-console.log(result);
+
+console.log(part1);
+console.log(part2);
